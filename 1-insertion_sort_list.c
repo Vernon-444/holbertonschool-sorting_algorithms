@@ -1,71 +1,70 @@
 #include "sort.h"
-
 /**
- * swap - swaps two consecutive nodes in a linked list
- *
- * @ptr: pointer to first node to be swapped
- * @list: pointer to head of list
+ * swap - swaps two adjacent elements of a listint_t list
+ * @head: pointer to head
+ * @node1: pointer to first adjacent node
+ * @node2: pointer to second adjacent node
  */
 
-void swap(listint_t **ptr, listint_t **list)
+void swap(listint_t **head, listint_t **node1, listint_t **node2)
 {
+	listint_t *previous = NULL, *next = NULL;
+	listint_t *a = *node1, *b = *node2;
 
-	listint_t *a = (*ptr);
-	listint_t *b = (*ptr)->next;
+	if (a->prev)
+	{
+		previous = a->prev;
+		previous->next = b;
+	}
+	b->prev = previous;
+	if (b->next)
+	{
+		next = b->next;
+		next->prev = a;
+	}
+	a->next = next;
+	b->next = a;
+	a->prev = b;
 
-	if (a->prev == NULL)
-	{
-		a->next = b->next;
-		b->prev = a->prev;
-		b->next = a;
-		a->prev = b;
-		a->next->prev = a;
-		*list = b;
-	}
-	else
-	{
-		a->next = b->next;
-		b->prev = a->prev;
-		b->prev->next = b;
-		a->prev = b;
-		b->next = a;
-		a->next->prev = a;
-	}
+	if (*head == a)
+		*head = b;
 }
 
 
 /**
- * insertion_sort_list - sorts a linked list
- *
- * @list: list to be sorted
+ * insertion_sort_list - sorts a listint_t list using insertion sort
+ * @list: pointer to head of list
  */
 
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *node = *list, *rev_node;
+	listint_t *i;
+	listint_t *rev;
 
-	if (node == NULL)
-		return;
-	for (; node->next != NULL; node = node->next)
+	if (!list)
 	{
-		if (node->n > node->next->n)
-		{
-			swap(&node, list);
-			print_list(*list);
-			if (node->prev != NULL)
-				rev_node = node->prev;
+		return;
+	}
 
-			while (rev_node != NULL)
+	i = *list;
+
+	while (i->next)
+	{
+		if (i->next != NULL && i->n > i->next->n)
+		{
+			swap(list, &i, &(i->next));
+			print_list(*list);
+			rev = i->prev;
+			while (rev->prev != NULL && rev->n < rev->prev->n)
 			{
-				if (rev_node->n > rev_node->next->n)
-				{
-					swap(&rev_node, list);
-					print_list(*list);
-				}
-				rev_node = rev_node->prev;
-				if (rev_node->prev == NULL)
-					break;
+				swap(list, &(rev->prev), &(rev));
+				print_list(*list);
 			}
+
+		}
+		if (i->next != NULL && i->n <= i->next->n)
+		{
+			i = i->next;
 		}
 	}
 }
