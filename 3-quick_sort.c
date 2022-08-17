@@ -1,11 +1,11 @@
 #include "sort.h"
 
- /**
-  * quick_sort - sorts quickly (i know, its a tough one)
-  *
-  * @array: pointer to the array
-  * @size: how many elements in the array
-  */
+/**
+ * quick_sort - sorts quickly
+ *
+ * @array: array to be sorted
+ * @size: size of the array
+ */
 
 void quick_sort(int *array, size_t size)
 {
