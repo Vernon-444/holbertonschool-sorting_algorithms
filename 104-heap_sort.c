@@ -1,66 +1,69 @@
-#include "merge_helpers.c"
 #include "sort.h"
 
 /**
- * heap_sort - Implementation of sift-down heap sort algorithm
- * @array: given array of integers to sort
- * @size: size of given array
+ * swap - swaps 2 elements in array
  *
- * Return: void
- */
-void heap_sort(int *array, size_t size)
+ * @a: element one
+ * @b: element two
+*/
+
+void swap(int *a, int *b)
 {
-	int i, len = (int)size;
+	int temp = *a;
 
-	for (i = size / 2 - 1; i >= 0; i--)
-		heapify(array, i, len, size);
-
-	for (i = len - 1; i >= 0; i--)
-	{
-		swap(&array[0], &array[i]);
-		if (i != 0)
-			print_array(array, size);
-		heapify(array, 0, i, size);
-	}
+	*a = *b;
+	*b = temp;
 }
 
 /**
- * heapify - Builds a binary heap
+ * heapify - creates a max heap sorted array recursively
  *
- * @array: Array to turn into a binary heap
- * @i: current index
- * @len: length of array (as an int)
- * @size: Size of array to turn into a heap
- */
-void heapify(int *array, int i, int len, size_t size)
+ * @array: array
+ * @sub_array_size: size of sub array to sort
+ * @size: size of full array
+ * @i: root of heap
+*/
+void heapify(int *array, int sub_array_size, size_t size, int i)
 {
 	int largest = i;
-	int left = iLeftChild(i);
-	int right = iRightChild(i);
+	int left = 2 * i + 1;
+	int right = 2 * i + 2;
 
-	if (left < len && array[left] > array[largest])
+	if (left < sub_array_size && array[left] > array[largest])
 		largest = left;
-	if (right < len && array[right] > array[largest])
+
+	if (right < sub_array_size && array[right] > array[largest])
 		largest = right;
+
 	if (largest != i)
 	{
 		swap(&array[i], &array[largest]);
 		print_array(array, size);
-		heapify(array, largest, len, size);
+		heapify(array, sub_array_size, size, largest);
 	}
-
 }
 
 /**
- * swap - swaps position of two elements in a binary tree
- * @a: First element
- * @b: Second element
+ * heap_sort - uses heap sort
  *
- * Return: Void
- */
-void swap(int *a, int *b)
+ * @array: array to sort
+ * @size: size of array
+*/
+void heap_sort(int *array, size_t size)
 {
-	int temp = *a;
-	*a = *b;
-	*b = temp;
+	int i;
+	int size_int = (int)size;
+
+	for (i = size_int / 2 - 1; i >= 0; i--)
+	{
+		heapify(array, size, size, i);
+	}
+
+	for (i = size_int - 1; i >= 0; i--)
+	{
+		swap(&array[0], &array[i]);
+		if (i > 0)
+			print_array(array, size);
+		heapify(array, i, size, 0);
+	}
 }
