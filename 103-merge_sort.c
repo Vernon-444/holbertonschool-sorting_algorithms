@@ -1,80 +1,101 @@
 #include "sort.h"
 
-void merge(int *array, int low, int mid, int high)
+/**
+ * merge_sort - merge sorts an array
+ * @array: pointer to array to sort
+ * @size: size of array
+ */
+void merge_sort(int *array, size_t size)
 {
-	int left_idx, right_idx, array_idx;
-	int left_len = mid - low + 1;
-	int right_len = high - mid;
-	int *temp_left = malloc_array(left_len);
-	int *temp_right = malloc_array(right_len);
+	int *tmp_arr = malloc(sizeof(array[0]) * size);
 
-	for (left_idx = 0; left_idx < left_len; left_idx++)
-		temp_left[left_idx] = array[low + left_idx];
-	for (right_idx = 0; right_idx < right_len; right_idx++)
-		temp_right[right_idx] = array[mid + right_idx + 1];
-	left_idx = 0, right_idx = 0, array_idx = low;
-	while (left_idx < left_len && right_idx < right_len)
+	copy_array(array, 0, size, tmp_arr);
+	recur_split(tmp_arr, 0, size, array);
+	free(tmp_arr);
+}
+
+/**
+ * print_da_array - prints array
+ * @array: pointer to array to print
+ * @start: start index of array
+ * @end: end index of array
+ */
+void print_da_array(int *array, int start, int end)
+{
+	int i;
+
+	for (i = start; i < end; i++)
 	{
-		if (temp_left[left_idx] <= temp_right[right_idx])
+		printf("%d", array[i]);
+		if (i < end - 1)
+			printf(", ");
+		else
+			printf("\n");
+	}
+}
+
+/**
+ * copy_array - copies array into temporary array
+ * @array: pointer to array to copy
+ * @start: start index of array
+ * @tmp_arr: pointer to temporary array
+ * @end: end index of array
+ */
+void copy_array(int *array, int start, int end, int *tmp_arr)
+{
+	int i;
+
+	for (i = start; i < end; i++)
+		tmp_arr[i] = array[i];
+}
+
+/**
+ * recur_split - recursively splits array into subarrays
+ * @array: pointer to array to sort
+ * @tmp_arr: pointer to temporary array
+ * @start: start index of array
+ * @end: end index of array
+ */
+void recur_split(int *tmp_arr, int start, int end, int *array)
+{
+	int mid = (start + end) / 2;
+
+	if (end - start <= 1)
+		return;
+	recur_split(array, start, mid, tmp_arr);
+	recur_split(array, mid, end, tmp_arr);
+	merge_it(tmp_arr, start, mid, end, array);
+}
+
+/**
+ * merge_it - merges two subarrays
+ * @array: pointer to array to sort
+ * @tmp_arr: pointer to temporary array
+ * @start: start index of array
+ * @mid: middle index of array
+ * @end: end index of array
+ */
+void merge_it(int *array, int start, int mid, int end, int *tmp_arr)
+{
+	int i = start, j = mid, k = start;
+
+	for (k = start; k < end; k++)
+	{
+		if (i < mid && (j >= end || array[i] <= array[j]))
 		{
-			array[array_idx] = temp_left[left_idx];
-			left_idx++;
+			tmp_arr[k] = array[i];
+			i++;
 		}
 		else
 		{
-			array[array_idx] = temp_right[right_idx];
-			right_idx++;
+			tmp_arr[k] = array[j];
+			j++;
 		}
-		array_idx++;
-	}
-	while (left_idx < left_len)
-	{
-		array[array_idx] = temp_left[left_idx];
-		left_idx++;
-		array_idx++;
-	}
-	while (right_idx < right_len)
-	{
-		array[array_idx] = temp_right[right_idx];
-		right_idx++;
-		array_idx++;
 	}
 	printf("Merging...\n[left]: ");
-	print_array(temp_left, left_len);
+	print_da_array(array, start, mid);
 	printf("[right]: ");
-	print_array(temp_right, right_len);
+	print_da_array(array, mid, end);
 	printf("[Done]: ");
-	array += low;
-	print_array(array, high - low + 1);
-	array -= low;
-	free(temp_left);
-	free(temp_right);
-}
-
-void sort(int *array, int low, int high)
-{
-	int mid;
-
-	if (low < high)
-	{
-		mid = low + (high - low) / 2;
-
-		sort(array, low, mid);
-		sort(array, mid + 1, high);
-
-		merge(array, low, mid, high);
-	}
-}
-
-void merge_sort(int *array, size_t size)
-{
-	sort(array, 0, size - 1);
-}
-
-int *malloc_array(int size)
-{
-	int *array;
-
-	array = malloc(size * sizeof(int));
-	return (array);
+	print_da_array(tmp_arr, start, end);
 }

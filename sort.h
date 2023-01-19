@@ -34,6 +34,15 @@ void heap_sort(int *array, size_t size);
 void swap(int *a, int *b);
 void heapify(int *array, int sub_array_size, size_t size, int i);
 
+/* T3 tasks */
+void heapify(int *arr, int size_int, int i, size_t size);
+void heap_sort(int *array, size_t size);
+void merge_sort(int *array, size_t size);
+void print_da_array(int *array, int start, int end);
+void copy_array(int *array, int start, int end, int *tmp_arr);
+void recur_split(int *tmp_arr, int start, int end, int *array);
+void merge_it(int *array, int start, int mid, int end, int *tmp_arr);
+
 
 
 #endif
